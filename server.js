@@ -9,11 +9,19 @@ app.post("/save-location", (req, res) => {
 
   const data = `Location received at ${new Date().toLocaleString()}\nLatitude: ${latitude}, Longitude: ${longitude}\n\n`;
 
-  // Save to file (or send to Telegram/email)
   fs.appendFileSync("locations.txt", data);
 
   console.log("📍 Location saved:", latitude, longitude);
   res.send("Location received");
+});
+
+app.get("/get-locations", (req, res) => {
+  fs.readFile("locations.txt", "utf8", (err, data) => {
+    if (err) {
+      return res.status(500).send("Locations file nahi mil rahi");
+    }
+    res.type("text/plain").send(data);
+  });
 });
 
 const PORT = process.env.PORT || 5000;
